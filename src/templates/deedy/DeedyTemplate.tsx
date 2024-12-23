@@ -1,32 +1,33 @@
-import { BasicIntro } from './components/BasicIntro';
-import { EducationSection } from './components/Education';
-import { VolunteerSection } from './components/Volunteer';
-import { Objective } from './components/Objective';
-import { SkillsSection } from './components/Skills';
-import { SummarySection } from './components/Summary';
-import { WorkSection } from './components/Work';
-import { AwardSection } from './components/Awards';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
-// Make sure the correct path is being used for StateContext
+import { VolunteerSection } from '../modern/components/Volunteer';
+import { SummarySection } from '../modern/components/Summary';
+import { AwardSection } from '../modern/components/Awards';
+
 import { StateContext } from '../../modules/builder/resume/ResumeLayout';
 import { SectionValidator } from '../../helpers/common/components/ValidSectionRenderer';
+import BasicIntro from '../professional/components/BasicIntro';
+import { EducationSection } from '../modern/components/Education';
+import { WorkSection } from '../modern/components/Work';
+import { SkillsSection } from '../modern/components/Skills';
+import { Objective } from '../modern/components/Objective';
 
-export default function MordernTemplate() {
+export default function DeedyTemplate() {
   const resumeData = useContext(StateContext);
 
   return (
     <div className="p-2">
-      <BasicIntro
-        name={resumeData.basics.name}
-        label={resumeData.basics.label}
-        url={resumeData.basics.url}
-        email={resumeData.basics.email}
-        city={resumeData.basics.location.city}
-        phone={resumeData.basics.phone}
-        image={resumeData.basics.image}
-        profiles={resumeData.basics.profiles}
-      />
+      {/* Name Section */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">
+          {resumeData.basics?.name || 'Your Name'}
+        </h1>
+        <p className="text-gray-600">{resumeData.basics?.headline || ''}</p>
+      </div>
+
+      {/* Pass the entire basics object to BasicIntro */}
+      <BasicIntro basics={resumeData.basics} />
+
       <div className="flex">
         <div className="basis-[60%] p-3">
           <SectionValidator value={resumeData.basics.summary}>

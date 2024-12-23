@@ -7,7 +7,17 @@
     "plugin:prettier/recommended",
     "plugin:import/errors",
     "plugin:import/typescript",
-    "prettier",
-    "next"
-  ]
+    "prettier"
+  ],
+  "plugins": ["prettier", "import", "@typescript-eslint"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "prettier/prettier": ["error"],
+    "import/order": ["error", { "groups": [["builtin", "external", "internal"]] }],
+    "@typescript-eslint/no-unused-vars": ["warn"]
+  }
 }

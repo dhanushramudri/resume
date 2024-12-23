@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
+import path from 'path';
+
+// Get the directory name for ES module
+const __dirname = new URL('.', import.meta.url).pathname;
+
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
@@ -29,6 +34,12 @@ const nextConfig = {
         permanent: true,
       },
     ];
+  },
+  webpack(config) {
+    // Alias '@' to 'src'
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+
+    return config;
   },
 };
 

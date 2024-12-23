@@ -25,7 +25,7 @@ export const SYSTEM_COLORS: IThemeColor[] = [
   },
 ];
 
-export const AVAILABLE_TEMPLATES: ITemplate = {
+export const AVAILABLE_TEMPLATES: { [key: string]: ITemplate } = {
   modern: {
     id: 'modern',
     name: 'Modern Resume',
@@ -39,6 +39,47 @@ export const AVAILABLE_TEMPLATES: ITemplate = {
     name: 'Professional Resume',
     thumbnail: '/templates/professional.png',
     component: dynamic(() => import('@/templates/professional/ProfessionalTemplate'), {
+      ssr: false,
+    }),
+  },
+  ats: {
+    id: 'ats',
+    name: 'ATS-Friendly Resume',
+    thumbnail: '/templates/ats.png',
+    component: dynamic(() => import('@/templates/ats/ATSTemplate'), {
+      ssr: false,
+    }),
+  },
+  minimalist: {
+    id: 'minimalist',
+    name: 'Minimalist Resume',
+    thumbnail: '/templates/minimalist.png',
+    component: dynamic(() => import('@/templates/minimalist/MinimalistTemplate'), {
+      ssr: false,
+    }),
+  },
+  elegant: {
+    id: 'elegant',
+    name: 'Elegant Template',
+    thumbnail: '/templates/creative.png',
+    component: dynamic(() => import('@/templates/elegant/ElegantTemplate'), {
+      ssr: false,
+    }),
+  },
+  creative: {
+    id: 'creative',
+    name: 'Creative Template',
+    thumbnail: '/templates/creative.png',
+    component: dynamic(() => import('@/templates/creative/CreativeTemplate'), {
+      ssr: false,
+    }),
+  },
+
+  deedy: {
+    id: 'deedy',
+    name: 'Deedy Resume',
+    thumbnail: '/templates/deedy.png', // Add the appropriate thumbnail path
+    component: dynamic(() => import('@/templates/deedy/DeedyTemplate'), {
       ssr: false,
     }),
   },

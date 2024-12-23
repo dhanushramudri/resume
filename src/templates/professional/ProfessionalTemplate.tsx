@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import styled from '@emotion/styled';
 
 import AboutMe from './components/AboutMe';
 import Achievements from './components/Achievements';
@@ -8,11 +9,12 @@ import Involvement from './components/Involvement';
 import { Objective } from './components/Objective';
 import RatedSkills from './components/RatedSkills';
 import { Section } from './components/Section';
-import { SectionValidator } from '@/helpers/common/components/ValidSectionRenderer';
-import { StateContext } from '@/modules/builder/resume/ResumeLayout';
+// import { SectionValidator } from '@/helpers/common/components/ValidSectionRenderer';
+// import { StateContext } from '@/modules/builder/resume/ResumeLayout';
 import UnratedSkills from './components/UnratedSkills';
 import Work from './components/Work';
-import styled from '@emotion/styled';
+import { SectionValidator } from '@/helpers/common/components/ValidSectionRenderer';
+import { StateContext } from '@/modules/builder/resume/ResumeLayout';
 
 const ResumeContainer = styled.div`
   display: flex;
@@ -43,25 +45,33 @@ const RightSection = styled.div`
 `;
 
 export default function ProfessionalTemplate() {
-  const resumeData = useContext(StateContext);
-  const skills = resumeData.skills;
-  const involvements = resumeData.activities.involvements;
-  const achievements = resumeData.activities.achievements;
+  const resumeData = useContext(StateContext) || {};
+  const skills = resumeData.skills || {
+    languages: [],
+    frameworks: [],
+    technologies: [],
+    libraries: [],
+    databases: [],
+    practices: [],
+    tools: [],
+  };
+  const involvements = resumeData.activities?.involvements || [];
+  const achievements = resumeData.activities?.achievements || [];
 
   return (
     <ResumeContainer>
       <LeftSection>
         <Section
-          title={resumeData.basics?.name}
-          profiles={resumeData.basics.profiles}
-          portfolioUrl={resumeData.basics.url}
+          title={resumeData.basics?.name || ''}
+          profiles={resumeData.basics?.profiles || []}
+          portfolioUrl={resumeData.basics?.url || ''}
           titleClassname="text-xl font-medium"
         >
-          <BasicIntro basics={resumeData.basics} />
+          <BasicIntro basics={resumeData.basics || {}} />
         </Section>
         <SectionValidator value={resumeData.work}>
           <Section title="Work Experience">
-            <Work work={resumeData.work} />
+            <Work work={resumeData.work || []} />
           </Section>
         </SectionValidator>
 
@@ -79,42 +89,60 @@ export default function ProfessionalTemplate() {
       </LeftSection>
 
       <RightSection>
-        <SectionValidator value={resumeData.basics.summary}>
+        <SectionValidator value={resumeData.basics?.summary}>
           <Section title="Summary">
-            <AboutMe summary={resumeData.basics.summary} profileImage={resumeData.basics.image} />
+            <AboutMe
+              summary={resumeData.basics?.summary || ''}
+              profileImage={resumeData.basics?.image || ''}
+            />
           </Section>
         </SectionValidator>
 
-        <SectionValidator value={resumeData.basics.objective}>
+        <SectionValidator value={resumeData.basics?.objective}>
           <Section title="Career Objective">
-            <Objective objective={resumeData.basics.objective} />
+            <Objective objective={resumeData.basics?.objective || ''} />
           </Section>
         </SectionValidator>
 
-        <SectionValidator value={skills.languages.concat(skills.frameworks)}>
-          <Section title="Technical expertise">
-            <RatedSkills items={skills.languages.concat(skills.frameworks)} />
+        <SectionValidator value={[...(skills.languages || []), ...(skills.frameworks || [])]}>
+          <Section title="Technical Expertise">
+            <RatedSkills items={[...(skills.languages || []), ...(skills.frameworks || [])]} />
           </Section>
         </SectionValidator>
 
-        <SectionValidator value={skills.technologies.concat(skills.libraries, skills.databases)}>
+        <SectionValidator
+          value={[
+            ...(skills.technologies || []),
+            ...(skills.libraries || []),
+            ...(skills.databases || []),
+          ]}
+        >
           <Section title="Skills / Exposure">
-            <UnratedSkills items={skills.technologies.concat(skills.libraries, skills.databases)} />
+            <UnratedSkills
+              items={[
+                ...(skills.technologies || []),
+                ...(skills.libraries || []),
+                ...(skills.databases || []),
+              ]}
+            />
           </Section>
         </SectionValidator>
-        <SectionValidator value={skills.practices}>
-          <Section title="Methodology/Approach">
-            <UnratedSkills items={skills.practices} />
+
+        <SectionValidator value={skills.practices || []}>
+          <Section title="Methodology / Approach">
+            <UnratedSkills items={skills.practices || []} />
           </Section>
         </SectionValidator>
-        <SectionValidator value={skills.tools}>
+
+        <SectionValidator value={skills.tools || []}>
           <Section title="Tools">
-            <UnratedSkills items={skills.tools} />
+            <UnratedSkills items={skills.tools || []} />
           </Section>
         </SectionValidator>
+
         <SectionValidator value={resumeData.education}>
           <Section title="Education">
-            <Education education={resumeData.education} />
+            <Education education={resumeData.education || []} />
           </Section>
         </SectionValidator>
       </RightSection>
