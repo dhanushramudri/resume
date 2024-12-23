@@ -12,6 +12,7 @@ import {
 
 import { AVAILABLE_TEMPLATES } from '@/helpers/constants';
 import DEFAULT_RESUME_JSON from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../../../functions/userDetails';
 import Image from 'next/image';
 import Link from 'next/link';
 import { NavMenuItem } from './components/MenuItem';
@@ -45,9 +46,9 @@ const NavBarLayout = () => {
 
   const exportResumeData = useCallback(() => {
     const updatedResumeJson = {
-      ...DEFAULT_RESUME_JSON,
+      ...(userDetailsData?.resumeData || DEFAULT_RESUME_JSON),
       basics: {
-        ...DEFAULT_RESUME_JSON.basics,
+        ...(userDetailsData?.resumeData?.basics || DEFAULT_RESUME_JSON.basics),
         ...useBasicDetails.getState().values,
       },
       work: useExperiences.getState().experiences,

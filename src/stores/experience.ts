@@ -3,6 +3,7 @@ import { GetState, SetState } from './store.interface';
 import { persist } from 'zustand/middleware';
 import { produce } from 'immer';
 import resumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 import { IExperienceItem, IExperienceStore } from './experience.interface';
 
 const addExperience =
@@ -88,7 +89,7 @@ const onMoveDown = (set: SetState<IExperienceStore>) => (index: number) => {
 export const useExperiences = create<IExperienceStore>()(
   persist(
     (set, get) => ({
-      experiences: resumeData.work,
+      experiences: userDetailsData?.resumeData.work || resumeData.work,
       add: addExperience(set),
       get: getExperience(get),
       remove: removeExperience(set),

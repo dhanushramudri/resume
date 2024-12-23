@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 import { produce } from 'immer';
 import { ISkillItem, ISkillState } from './skill.interface';
 import resumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 
 const addSkill =
   (set: SetState<ISkillState>) =>
@@ -51,7 +52,7 @@ export const useLanguages = create<ISkillState>()(
     (set, get) => ({
       title: 'Languages',
       hasLevel: true,
-      values: resumeData.skills.languages,
+      values: userDetailsData?.resumeData?.skills.languages || resumeData?.skills.languages,
       isEnabled: true,
 
       ...getMethods(set, get),
@@ -65,7 +66,7 @@ export const useFrameworks = create<ISkillState>()(
     (set, get) => ({
       title: 'Frameworks',
       hasLevel: true,
-      values: resumeData.skills.frameworks,
+      values: userDetailsData?.resumeData?.skills?.frameworks || resumeData.skills.frameworks,
       isEnabled: true,
 
       ...getMethods(set, get),
@@ -79,7 +80,7 @@ export const useTechnologies = create<ISkillState>()(
     (set, get) => ({
       title: 'Technologies',
       hasLevel: false,
-      values: resumeData.skills.technologies,
+      values: userDetailsData?.resumeData?.skills?.technologies || resumeData.skills.technologies,
       isEnabled: true,
 
       ...getMethods(set, get),
@@ -93,7 +94,7 @@ export const useLibraries = create<ISkillState>()(
     (set, get) => ({
       title: 'Libraries',
       hasLevel: false,
-      values: resumeData.skills.libraries,
+      values: userDetailsData?.resumeData?.skills?.libraries || resumeData.skills.libraries,
       isEnabled: true,
 
       ...getMethods(set, get),
@@ -107,7 +108,7 @@ export const useDatabases = create<ISkillState>()(
     (set, get) => ({
       title: 'Databases',
       hasLevel: false,
-      values: resumeData.skills.databases,
+      values: userDetailsData?.resumeData?.skills?.databases || resumeData.skills.databases,
       isEnabled: true,
 
       ...getMethods(set, get),
@@ -121,7 +122,7 @@ export const usePractices = create<ISkillState>()(
     (set, get) => ({
       title: 'Practices',
       hasLevel: false,
-      values: resumeData.skills.practices,
+      values: userDetailsData?.resumeData?.skills.practices || resumeData.skills.practices,
       isEnabled: true,
 
       ...getMethods(set, get),
@@ -135,7 +136,7 @@ export const useTools = create<ISkillState>()(
     (set, get) => ({
       title: 'Tools',
       hasLevel: false,
-      values: resumeData.skills.tools,
+      values: userDetailsData?.resumeData?.skills.tools || resumeData.skills.tools,
       isEnabled: true,
 
       ...getMethods(set, get),

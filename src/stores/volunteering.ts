@@ -3,7 +3,11 @@ import { GetState, SetState } from './store.interface';
 import { persist } from 'zustand/middleware';
 import { produce } from 'immer';
 import resumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 import { IVolunteeringItem, IVolunteeringStore } from './volunteering.interface';
+
+// Fallback for volunteering data
+const volunteeringData = userDetailsData?.resumeData?.volunteer || resumeData.volunteer;
 
 const addVolunteering =
   (set: SetState<IVolunteeringStore>) =>
@@ -89,7 +93,7 @@ const onMoveDown = (set: SetState<IVolunteeringStore>) => (index: number) => {
 export const useVoluteeringStore = create<IVolunteeringStore>()(
   persist(
     (set, get) => ({
-      volunteeredExps: resumeData.volunteer,
+      volunteeredExps: volunteeringData, // Using the fallback data
       add: addVolunteering(set),
       get: getVolunteeringExp(get),
       remove: removeVolunteeringExp(set),

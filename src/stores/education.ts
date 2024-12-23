@@ -3,6 +3,7 @@ import { GetState, SetState } from './store.interface';
 import { persist } from 'zustand/middleware';
 import { produce } from 'immer';
 import resumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 import { IEducationItem, IEducationStore } from './education.interface';
 
 const addEducation =
@@ -87,7 +88,7 @@ const updateEducation =
 export const useEducations = create<IEducationStore>()(
   persist(
     (set, get) => ({
-      academics: resumeData.education,
+      academics: userDetailsData?.resumeData.education || resumeData.education,
       add: addEducation(set),
       get: getEducation(get),
       remove: removeEducation(set),

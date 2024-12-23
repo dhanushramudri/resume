@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { produce } from 'immer';
 import resumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 import { IAwardItem, IAwardsStore } from './awards.interface';
 import { GetState, SetState } from './store.interface';
 
@@ -70,7 +71,7 @@ const updateAward = (set: SetState<IAwardsStore>) => (index: number, updatedInfo
 export const useAwards = create<IAwardsStore>()(
   persist(
     (set, get) => ({
-      awards: resumeData.awards,
+      awards: userDetailsData?.resumeData.awards || resumeData.awards,
       add: addAward(set),
       get: getAllAwards(get),
       remove: removeAward(set),

@@ -4,6 +4,8 @@ import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/n
 import ResumeForm from '../forms/ResumeForm';
 import DomainPage from './domain';
 import { useEffect, useState } from 'react';
+import { ResumeProvider } from '@/context/ResumeContext';
+import ResumeBuilder from '@/compenents/resume-builder';
 
 function Header() {
   return (
@@ -25,39 +27,125 @@ function Header() {
   );
 }
 
+// src/pages/index.js
+
+// Update DomainPageWrapper to accept user as a prop
+function DomainPageWrapper({ initialData, user }) {
+  const handleEditForm = () => {
+    // Reset form completion status and reload
+    const updateUserStatus = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user?.id,
+            filledForm: false,
+          }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error('Error updating user status:', error);
+      }
+    };
+
+    updateUserStatus();
+  };
+
+  return (
+    <div>
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={handleEditForm}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Fill Form
+        </button>
+      </div>
+      <DomainPage initialData={initialData} />
+    </div>
+  );
+}
+
 function HomePage() {
   const { user, isLoaded } = useUser();
   const [step2Completed, setStep2Completed] = useState(false);
+  const [resumeData, setResumeData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkUserInDatabase = async () => {
+    const checkUserStatus = async () => {
       if (isLoaded && user) {
         console.log('index user:', user);
+        setIsLoading(true);
 
         try {
-          const response = await fetch(`http://localhost:5000/user/${user.id}`, {
+          // Fetch user data
+          const userResponse = await fetch(`http://localhost:5000/user/${user.id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
             },
           });
 
-          if (response.ok) {
-            const userData = await response.json();
+          // Fetch user details data
+          const userDetailsResponse = await fetch(`http://localhost:5000/user-details/${user.id}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
             console.log('User data from backend:', userData);
-            setStep2Completed(userData.filledForm);
+
+            if (userDetailsResponse.ok) {
+              const userDetailsData = await userDetailsResponse.json();
+              console.log('User details from backend:', userDetailsData);
+
+              // Store user details data in localStorage
+              try {
+                localStorage.setItem('userDetailsData', JSON.stringify(userDetailsData));
+              } catch (error) {
+                console.error('Error saving to localStorage:', error);
+              }
+
+              // Check both conditions:
+              // 1. User has filledForm marked as true
+              // 2. UserDetails exists and has resumeData
+              const formCompleted = userData.filledForm && userDetailsData?.resumeData;
+              setStep2Completed(formCompleted);
+
+              if (formCompleted) {
+                setResumeData(userDetailsData.resumeData);
+              }
+            } else {
+              console.log('No user details found, form not completed');
+              setStep2Completed(false);
+            }
           } else {
-            console.error('Failed to fetch user data:', response.status);
+            console.error('Failed to fetch user data:', userResponse.status);
+            setStep2Completed(false);
           }
         } catch (error) {
           console.error('Error fetching user data:', error);
+          setStep2Completed(false);
+        } finally {
+          setIsLoading(false);
         }
       } else {
         console.log('User is not loaded yet or is undefined', { isLoaded, user });
+        setIsLoading(false);
       }
     };
 
-    checkUserInDatabase();
+    checkUserStatus();
   }, [isLoaded, user]);
 
   return (
@@ -78,10 +166,19 @@ function HomePage() {
           Build your professional resume effortlessly!
         </p>
 
-        <div className="mt-8 w-full max-w-4xl">
+        <div className="mt-8 w-full max-w-5xl">
           <SignedIn>
-            {/* Conditionally render DomainPage or ResumeForm */}
-            {step2Completed ? <DomainPage /> : <ResumeForm />}
+            {isLoading ? (
+              <div className="flex justify-center items-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : step2Completed ? (
+              <DomainPageWrapper initialData={resumeData} user={user} />
+            ) : (
+              <ResumeProvider>
+                <ResumeBuilder />
+              </ResumeProvider>
+            )}
           </SignedIn>
 
           <SignedOut>

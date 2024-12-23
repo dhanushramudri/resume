@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { produce } from 'immer';
 import resumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 import { IActivityStore, IActivity } from './activity.interface';
 import { SetState } from './store.interface';
 
@@ -30,7 +31,7 @@ const updateInvolvements = (set: SetState<IActivityStore>) => (involvements: str
 export const useActivity = create<IActivityStore>()(
   persist(
     (set, get) => ({
-      activities: resumeData.activities,
+      activities: userDetailsData?.resumeData.activities || resumeData.activities,
 
       get: () => get().activities,
       reset: setAllAwards(set),

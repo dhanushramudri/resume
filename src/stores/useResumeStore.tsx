@@ -9,6 +9,7 @@ import {
 } from '@/stores/skills';
 
 import ResumeData from '@/helpers/constants/resume-data.json';
+import userDetailsData from '../functions/userDetails';
 import { useActivity } from './activity';
 import { useAwards } from './awards';
 import { useBasicDetails } from './basic';
@@ -17,8 +18,11 @@ import { useExperiences } from './experience';
 import { useVoluteeringStore } from './volunteering';
 
 export const useResumeStore = () => {
+  console.log('user data is ', userDetailsData);
+  const resumeData = userDetailsData?.resumeData || ResumeData; // Fallback logic
+
   return {
-    ...ResumeData,
+    ...resumeData,
     basics: useBasicDetails((state) => state.values),
     work: useExperiences((state) => state.experiences),
     education: useEducations((state) => state.academics),
@@ -41,17 +45,19 @@ export const useResumeStore = () => {
  * @description Reset all the stores
  */
 export const resetResumeStore = () => {
-  useBasicDetails.getState().reset(ResumeData.basics);
-  useLanguages.getState().reset(ResumeData.skills.languages);
-  useFrameworks.getState().reset(ResumeData.skills.frameworks);
-  useLibraries.getState().reset(ResumeData.skills.libraries);
-  useDatabases.getState().reset(ResumeData.skills.databases);
-  useTechnologies.getState().reset(ResumeData.skills.technologies);
-  usePractices.getState().reset(ResumeData.skills.practices);
-  useTools.getState().reset(ResumeData.skills.tools);
-  useExperiences.getState().reset(ResumeData.work);
-  useEducations.getState().reset(ResumeData.education);
-  useVoluteeringStore.getState().reset(ResumeData.volunteer);
-  useAwards.getState().reset(ResumeData.awards);
-  useActivity.getState().reset(ResumeData.activities);
+  const resumeData = userDetailsData?.resumeData || ResumeData; // Fallback logic
+
+  useBasicDetails.getState().reset(resumeData.basics);
+  useLanguages.getState().reset(resumeData.skills.languages);
+  useFrameworks.getState().reset(resumeData.skills.frameworks);
+  useLibraries.getState().reset(resumeData.skills.libraries);
+  useDatabases.getState().reset(resumeData.skills.databases);
+  useTechnologies.getState().reset(resumeData.skills.technologies);
+  usePractices.getState().reset(resumeData.skills.practices);
+  useTools.getState().reset(resumeData.skills.tools);
+  useExperiences.getState().reset(resumeData.work);
+  useEducations.getState().reset(resumeData.education);
+  useVoluteeringStore.getState().reset(resumeData.volunteer);
+  useAwards.getState().reset(resumeData.awards);
+  useActivity.getState().reset(resumeData.activities);
 };
